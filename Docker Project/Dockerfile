@@ -1,16 +1,12 @@
-# Build Phase
-FROM node:alpine as builder
-WORKDIR /usr/app
-COPY ./package.json .
-RUN npm install
-COPY . .
-CMD ["npm", "run", "build"]
+# Use an existing docker image as a base
+FROM alpine
 
-# Run Phase
-FROM node:alpine
+# Create a Work Directory
 WORKDIR /usr/app
-COPY package.json ./
-RUN npm install
-COPY --from=builder /usr/app/dist .
-CMD ["node", "server.js"]
 
+# Download and install a dependency
+RUN apk add --update redis
+
+# Tell the image what to do when it starts
+# as a container
+CMD ["redis-server"]
